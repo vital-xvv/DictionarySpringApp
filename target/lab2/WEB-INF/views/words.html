@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" charset="utf-8">
+    <title>Words</title>
+</head>
+<body>
+
+    <div th:each="wordInfo : ${wordInfos}">
+        <div th:text="${wordInfo.getWord()}">TEXT</div>
+        <div th:text="${wordInfo.getExample()}">TEXT</div>
+        <div th:text="${wordInfo.toString()}">TEXT</div>
+        <hr/>
+    </div>
+
+</body>
+</html>
