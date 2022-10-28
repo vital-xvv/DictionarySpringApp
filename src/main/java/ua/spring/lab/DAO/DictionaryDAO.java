@@ -2,10 +2,9 @@ package ua.spring.lab.DAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ua.spring.lab.models.models.Dictionary;
-import ua.spring.lab.models.models.Language;
-import ua.spring.lab.models.models.WordInfo;
-import ua.spring.lab.service.WordInfoService;
+import ua.spring.lab.model.entity.Language;
+import ua.spring.lab.model.entity.Word;
+import ua.spring.lab.service.WordService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,18 +17,20 @@ public class DictionaryDAO {
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
-    private WordInfoService wordInfoService;
+
+    private final WordService wordService;
 
     @Autowired
-    public void setWordInfo(WordInfoService wordInfoService) {
-        this.wordInfoService = wordInfoService;
+    public DictionaryDAO(WordService wordService) {
+        this.wordService = wordService;
     }
+
 
     private static Connection connection;
 
     static {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -43,29 +44,17 @@ public class DictionaryDAO {
         }
     }
 
-    public WordInfo getWord(String word, Language language){
-        WordInfo wordInfo = null;
+
+
+
+    public Word getWord(String word, Language language){
+        Word wordInfo = null;
         try {
-            PreparedStatement statement = null;
-            switch (language){
-                case ENGLISH: {
-                    statement = connection.prepareStatement("SELECT * FROM words WHERE en=?");
-                    statement.setString(1,word);
-                break;}
-                case UKRAINIAN:{
-                    statement = connection.prepareStatement("SELECT * FROM words WHERE ua=?");
-                    statement.setString(1,word);
-                break;}
-                case SPANISH:{
-                    statement = connection.prepareStatement("SELECT * FROM words WHERE es=?");
-                    statement.setString(1,word);
-                }
-            }
-
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM words WHERE " + language.countryCode + "=?");
+            statement.setString(1,word);
             ResultSet resultSet = statement.executeQuery();
-
             while(resultSet.next()) {
-                wordInfo = wordInfoService.fromJson(resultSet.getString(language.countryCode + "_json"));
+                wordInfo = wordService.getWordFromJson(resultSet.getString(language.countryCode + "_json"));
             }
         } catch (SQLException throwables) {
             System.out.println("Failed to get a searched word + ' " + word + " '");
@@ -74,32 +63,43 @@ public class DictionaryDAO {
         return wordInfo;
     }
 
-    public List<WordInfo> getWords(Language language){
-        List<WordInfo> wordInfos = new ArrayList<>();
+
+
+
+    public List<Word> getWords(Language language){
+        List<Word> words = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = null;
-            switch (language){
-                case ENGLISH: {
-                    resultSet = statement.executeQuery("SELECT en_json FROM words");
-                    break;}
-                case UKRAINIAN:{
-                    resultSet = statement.executeQuery("SELECT ua_json FROM words");
-                    break;}
-                case SPANISH:{
-                    resultSet = statement.executeQuery("SELECT es_json FROM words");
-                }
-            }
+            ResultSet resultSet = statement.executeQuery("SELECT " + language.countryCode + "_json FROM words");;
             while(resultSet.next()) {
-                System.out.println(resultSet.getString(language.countryCode + "_json"));
-                WordInfo wordInfo = wordInfoService.fromJson(resultSet.getString(language.countryCode + "_json"));
-                wordInfos.add(wordInfo);
+                Word word = wordService.getWordFromJson(resultSet.getString(language.countryCode + "_json"));
+                words.add(word);
             }
         } catch (SQLException throwables) {
             System.out.println("Failed to get all words from database");
             throwables.printStackTrace();
         }
-        return wordInfos;
+        return words;
     }
+
+
+
+
+    public Word getTranslation(String word, Language fromLanguage, Language toLanguage) {
+        Word wordInfo = null;
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM words WHERE " + fromLanguage.countryCode + "=?");
+            statement.setString(1,word);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()) {
+                wordInfo = wordService.getWordFromJson(resultSet.getString(toLanguage.countryCode + "_json"));
+            }
+        } catch (SQLException throwables) {
+            System.out.println("Failed to get a searched word + ' " + word + " '");
+            throwables.printStackTrace();
+        }
+        return wordInfo;
+    }
+
 
 }

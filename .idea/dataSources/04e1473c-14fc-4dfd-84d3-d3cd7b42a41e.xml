@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="MariaDB - dict_db@localhost">
-  <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.20">
+  <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.43">
     <root id="1">
-      <ServerVersion>10.4.25</ServerVersion>
-      <DefaultEngine>InnoDB</DefaultEngine>
       <DefaultCasing>lower/lower</DefaultCasing>
+      <DefaultEngine>InnoDB</DefaultEngine>
+      <ServerVersion>10.4.25</ServerVersion>
     </root>
     <schema id="2" parent="1" name="dict_db">
       <Current>1</Current>
-      <Collation>utf8mb4_general_ci</Collation>
+      <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="3" parent="1" name="information_schema">
-      <Collation>utf8_general_ci</Collation>
+      <CollationName>utf8_general_ci</CollationName>
     </schema>
     <schema id="4" parent="1" name="mysql">
-      <Collation>utf8mb4_general_ci</Collation>
+      <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="5" parent="1" name="performance_schema">
-      <Collation>utf8_general_ci</Collation>
+      <CollationName>utf8_general_ci</CollationName>
     </schema>
     <schema id="6" parent="1" name="phpmyadmin">
-      <Collation>utf8_bin</Collation>
+      <CollationName>utf8_bin</CollationName>
     </schema>
     <schema id="7" parent="1" name="test">
-      <Collation>latin1_swedish_ci</Collation>
+      <CollationName>latin1_swedish_ci</CollationName>
     </schema>
   </database-model>
 </dataSource>
