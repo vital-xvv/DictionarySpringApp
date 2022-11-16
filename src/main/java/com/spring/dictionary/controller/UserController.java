@@ -33,6 +33,12 @@ public class UserController {
          return ResponseEntity.ok().body(userService.getAllUsers());
      }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<User> saveRole(@PathVariable("username") String username) {
+        URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().toUriString());
+        return ResponseEntity.created(uri).body(userService.getUser(username));
+    }
+
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
          URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/role/save").toUriString());
