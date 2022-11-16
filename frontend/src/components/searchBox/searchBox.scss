@@ -1,0 +1,37 @@
+.box {
+  width: 600px;
+  height: 60px;
+  background-color: white;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 20px;
+
+  i {
+    font-size: 20px;
+    color: #777;
+    transition: .2s ease-in-out;
+  }
+
+  i:hover {
+    font-size: 25px;
+    color: #666;
+  }
+
+  input {
+    height: 40px;
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    padding-left: 10px;
+
+
+  }
+
+  .Select {
+    border: none;
+  }
+}

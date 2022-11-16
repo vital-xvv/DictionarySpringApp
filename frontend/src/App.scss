@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(-45deg, rgb(67, 188, 204), rgb(21, 37, 131));
+}
+
+.main-container {
+  width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  border-radius: 30px;
+  background-color: rgb(125, 181, 247);
+}
+
+.main-heading {
+  font-size: 60px;
+  font-weight: bold;
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+}

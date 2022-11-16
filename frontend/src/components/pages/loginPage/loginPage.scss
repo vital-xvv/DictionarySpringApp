@@ -1,0 +1,19 @@
+.login-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .info {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  .main-container {
+    width: 500px;
+    background-color: #fff;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1.2rem;
+
+  }
+}

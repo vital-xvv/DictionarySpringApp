@@ -1,0 +1,19 @@
+.header {
+  height: 50px;
+  padding: 0.5rem 1.5rem;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  .logo {
+    text-shadow: 3px 2px 1px chartreuse;
+  }
+  &-btn-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-around;
+  }
+}

@@ -1,0 +1,4 @@
+@import "../loginPage/loginPage";
+.register-page {
+  @extend .login-page
+}

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="MariaDB - dict_db@localhost">
   <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.43">
-    <root id="1">
-      <DefaultCasing>lower/lower</DefaultCasing>
-      <DefaultEngine>InnoDB</DefaultEngine>
-      <ServerVersion>10.4.25</ServerVersion>
-    </root>
+    <root id="1"/>
     <schema id="2" parent="1" name="dict_db">
       <Current>1</Current>
       <CollationName>utf8mb4_general_ci</CollationName>
