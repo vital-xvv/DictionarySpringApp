@@ -58,6 +58,12 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 }
 
             } else {
+                log.error("Error logging in");
+                response.setStatus(FORBIDDEN.value());
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "You are unauthorized");
+                response.setContentType("application/json");
+                new ObjectMapper().writeValue(response.getOutputStream(), error);
                 filterChain.doFilter(request, response);
             }
 

@@ -25,6 +25,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
+@CrossOrigin("http://localhost:3000")
 public class UserController {
      private final UserService userService;
 
