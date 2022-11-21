@@ -33,8 +33,13 @@ export default class Service {
   }
 
 
-  login(/*email, password*/) {
-    //TODO: some logic with API
+  async login(email, password) {
+    try {
+      const res = await this.fetchAxios(`${this.baseUrl}/login?username=${email}&password=${password}`, 'POST')
+      localStorage.setItem('token', res)
+    } catch (e) {
+      alert('Something went wrong, try again :(')
+    }
   }
 
   register(/*email, password*/) {
