@@ -1,5 +1,5 @@
 import {capitalize} from '../../../utils/funcs';
-import Service from '../../../services/service';
+import useService from '../../../services/useService';
 import {useState} from 'react';
 import './homePage.scss';
 import SearchBox from '../../searchBox/searchBox';
@@ -13,11 +13,11 @@ const homePage = () => {
   // TODO: investigate opportunity to add spinner on loading
   // const [loading, setLoading] = useState('');
 
-  const service = new Service();
+  const {getWord, process, getTranslation} = useService();
 
   const setWordInfo = async (selectedLanguage) => {
     console.log(searchRequest);
-    const res = await service.getWord(selectedLanguage, searchRequest);
+    const res = await getWord(selectedLanguage, searchRequest);
     // setLoading(true);
     setWord(res);
     // setLoading(false);
@@ -30,7 +30,7 @@ const homePage = () => {
       toLanguageCode: translateLanguage
     };
     // setLoading(true);
-    const res = await service.getTranslation(payload);
+    const res = await getTranslation(payload);
     setTranslation(res);
     // setLoading(false);
   };
