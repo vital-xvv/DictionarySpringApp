@@ -10,17 +10,13 @@ const homePage = () => {
   const [word, setWord] = useState();
   const [searchRequest, setSearchRequest] = useState('');
   const [translation, setTranslation] = useState();
-  // TODO: investigate opportunity to add spinner on loading
-  // const [loading, setLoading] = useState('');
 
-  const {getWord, process, getTranslation} = useService();
+  const {getWord, /*process*/ getTranslation} = useService();
 
   const setWordInfo = async (selectedLanguage) => {
     console.log(searchRequest);
     const res = await getWord(selectedLanguage, searchRequest);
-    // setLoading(true);
     setWord(res);
-    // setLoading(false);
   };
 
   const setTranslationResult = async (selectedLanguage, translateLanguage) => {
@@ -29,10 +25,8 @@ const homePage = () => {
       fromLanguageCode: selectedLanguage,
       toLanguageCode: translateLanguage
     };
-    // setLoading(true);
     const res = await getTranslation(payload);
     setTranslation(res);
-    // setLoading(false);
   };
 
   return (
