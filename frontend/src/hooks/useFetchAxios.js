@@ -4,13 +4,14 @@ import axios from "axios";
 const useFetchAxios = () => {
   const [process, setProcess] = useState('idle');
 
-
-  const request = useCallback(async (url, method = 'GET', body = null) => {
+  const defaultHeaders = {Authorization: localStorage.getItem('token')}
+  const request = useCallback(async (url, method = 'GET', body = null, headers = defaultHeaders) => {
     setProcess('loading');
     const resp = await axios({
-      method: method,
-      url: url,
-      data: body
+      method,
+      url,
+      data: body,
+      headers
     }).catch(function (error) {
       if (error.response) {
         console.log(error.response.data);

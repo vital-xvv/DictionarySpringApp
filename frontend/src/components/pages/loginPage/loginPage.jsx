@@ -12,7 +12,6 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     await login(email, password);
-
     isLoggedIn() ? navigate('/') : null
   }
 

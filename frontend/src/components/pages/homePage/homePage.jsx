@@ -11,7 +11,7 @@ const homePage = () => {
   const [searchRequest, setSearchRequest] = useState('');
   const [translation, setTranslation] = useState();
 
-  const {getWord, /*process*/ getTranslation} = useService();
+  const {getWord, process, getTranslation} = useService();
 
   const setWordInfo = async (selectedLanguage) => {
     console.log(searchRequest);
@@ -44,11 +44,11 @@ const homePage = () => {
               <Message>Enter your word</Message>
           ) : word ? (
               <WordCard word={word} translation={translation}/>
-          ) /*: loading ? (
+          ) : process === 'loading' ? (
               <Message>Loading</Message>
-          )*/ : (
+          ) : process !== 'loading' ? (
               <Message>Word was not found</Message>
-          )}
+          ) : null}
         </div>
       </div>
   );

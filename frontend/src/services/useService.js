@@ -5,11 +5,11 @@ export const useService = () => {
   const {request, process, setProcess, clearError} = useFetchAxios()
 
   const getWord = (fromCode, word) => {
-    return request(`${baseUrl}/${fromCode}/${word}`);
+    return request(`${baseUrl}/dictionary/api/${fromCode}/${word}`);
   }
 
   const getTranslation = (data) => {
-    return request(`${baseUrl}/translate`, 'POST', data);
+    return request(`${baseUrl}/dictionary/api/translate`, 'POST', data);
   }
 
   const isLoggedIn = () => {
@@ -19,7 +19,8 @@ export const useService = () => {
   const login = async (email, password) => {
     try {
       const res = await request(`${baseUrl}/login?username=${email}&password=${password}`, 'POST')
-      localStorage.setItem('token', res)
+      localStorage.setItem('token', 'Bearer ' + res.access_token)
+      localStorage.setItem('username', email);
     } catch (e) {
       alert('Something went wrong, try again :(')
     }

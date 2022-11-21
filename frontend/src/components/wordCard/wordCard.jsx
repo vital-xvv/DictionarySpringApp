@@ -10,10 +10,10 @@ export default function WordCard({ word, translation }) {
 				<h3 className='card-detail'>Meaning</h3>
 				<div className='detail-info'>{word.meaning}</div>
 			</div>
-			<div className='card-info'>
+			{word.synonyms ? <div className='card-info'>
 				<h3 className='card-detail'>Synonyms</h3>
 				<div className='detail-info'>{word.synonyms}</div>
-			</div>
+			</div> : null}
 			<div className='card-info'>
 				<h3 className='card-detail'>Example</h3>
 				<div className='detail-info'>{word.example}</div>
