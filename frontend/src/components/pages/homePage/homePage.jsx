@@ -14,7 +14,6 @@ const homePage = () => {
   const {getWord, process, getTranslation} = useService();
 
   const setWordInfo = async (selectedLanguage) => {
-    console.log(searchRequest);
     const res = await getWord(selectedLanguage, searchRequest);
     setWord(res);
   };
@@ -46,9 +45,11 @@ const homePage = () => {
               <WordCard word={word} translation={translation}/>
           ) : process === 'loading' ? (
               <Message>Loading</Message>
-          ) : process !== 'loading' ? (
+          ) : process === 'waiting' && !word ? (
               <Message>Word was not found</Message>
-          ) : null}
+          ) : process === 'error' ? (
+              <Message>Error, something wrong</Message>
+          ): null}
         </div>
       </div>
   );
