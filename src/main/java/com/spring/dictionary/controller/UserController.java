@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -271,6 +272,45 @@ public class UserController {
         } else {
             throw new RuntimeException("Refresh token is missing");
         }
+    }
+
+    @Operation(
+            tags={"User Pagination and Filtering"},
+            summary = "GET request to get a list of users with a particular size and page number",
+            description = "Path variable offset means a number of page starting from 0, pageSize means number of elements.",
+            responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Page.class),
+                    mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
+    @GetMapping("/users/pagination/{offset}/{pageSize}")
+    public Page<User> findUsersWithPagination(@PathVariable("offset") Integer offset, @PathVariable("pageSize") Integer pageSize) {
+        return userService.findUsersWithPagination(offset,pageSize);
+    }
+
+    @Operation(
+            tags={"User Pagination and Filtering"},
+            summary = "GET request to get a filtered list of users by a particular field.",
+            description = "Path variable fieled means a property a filtering will be done by.",
+            responses = {@ApiResponse(responseCode = "200", content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
+    @GetMapping("/users/filter/{field}")
+    public List<User> findUsersWithFiltering(@PathVariable String field) {
+        return userService.findUsersWithFiltering(field);
+    }
+
+    @Operation(
+            tags={"User Pagination and Filtering"},
+            summary = "GET request to get a filtered list of users by a particular field with pagination.",
+            description = "Path variable offset means a number of page starting from 0, pageSize means number of elements, field means a property a filtering will be done by.",
+            responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Page.class),
+                    mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
+    @GetMapping("/users/pagination/filter/{offset}/{pageSize}/{field}")
+    public Page<User> findUsersWithPaginationAndFiltering(@PathVariable Integer offset, @PathVariable Integer pageSize, @PathVariable String field) {
+        return userService.findUsersWithPaginationAndFiltering(offset, pageSize, field);
     }
 
 }

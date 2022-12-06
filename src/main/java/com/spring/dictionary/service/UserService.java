@@ -2,6 +2,7 @@ package com.spring.dictionary.service;
 
 import com.spring.dictionary.actors.Role;
 import com.spring.dictionary.actors.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,4 +13,9 @@ public interface UserService {
     User getUser(String username);
     List<User> getAllUsers();
     void deleteUserByUsername(String username);
+    Page<User> findUsersWithPagination(int offset, int pageSize);
+
+    List<User> findUsersWithFiltering(String field);
+
+    Page<User> findUsersWithPaginationAndFiltering(int offset, int pageSize, String field);
 }

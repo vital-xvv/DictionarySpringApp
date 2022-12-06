@@ -6,6 +6,10 @@ import com.spring.dictionary.repository.RoleRepository;
 import com.spring.dictionary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -81,9 +85,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void deleteUser(User user) {
-        log.info("Deleting user "+ user.getUsername());
-        userRepository.delete(user);
+    public void deleteUserByUsername(String username) {
+        log.info("Deleting user "+ username);
+        userRepository.deleteUserByUsername(username);
+    }
+
+    @Override
+    public Page<User> findUsersWithPagination(int offset, int pageSize) {
+        Pageable pageable = PageRequest.of(offset, pageSize);
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<User> findUsersWithFiltering(String field) {
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, field));
+    }
+
+    @Override
+    public Page<User> findUsersWithPaginationAndFiltering(int offset, int pageSize, String field) {
+        Pageable pageable = PageRequest.of(offset, pageSize, Sort.by(Sort.Direction.ASC, field));
+        return userRepository.findAll(pageable);
     }
 
 
