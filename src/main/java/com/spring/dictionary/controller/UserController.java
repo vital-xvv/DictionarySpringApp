@@ -20,17 +20,17 @@ import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 @CrossOrigin("http://localhost:3000")
 public class UserController {
-     private final UserService userService;
+    private final UserService userService;
 
-     @GetMapping("/users")
-     public ResponseEntity<List<User>> getUsers() {
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers() {
          return ResponseEntity.ok().body(userService.getAllUsers());
      }
 
@@ -46,7 +46,7 @@ public class UserController {
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
-    @PostMapping("/add/role/{username}/{roleName}")
+    @PutMapping("/add/role/{username}/{roleName}")
     public ResponseEntity<User> saveRole(@PathVariable("username") String username, @PathVariable("roleName") String roleName) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add/role").toUriString());
         userService.addRoleToUser(username, roleName);
@@ -58,6 +58,30 @@ public class UserController {
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/user/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
+    }
+
+    @DeleteMapping("/user/delete")
+    public void deleteUser(HttpServletResponse response, @RequestBody User user) {
+        Map<String, String> res = new HashMap<>();
+        try{
+            userService.deleteUser(user);
+            response.setStatus(ACCEPTED.value());
+            res.put("status", "200");
+            res.put("message", "Successfully deleted user " + user.getUsername());
+            response.setContentType("application/json");
+            new ObjectMapper().writeValue(response.getOutputStream(), res);
+        }
+        catch (Exception e) {
+            response.setStatus(NOT_FOUND.value());
+            res.put("status", "404");
+            res.put("message", "User " + user.getUsername() + " not found");
+            response.setContentType("application/json");
+            try {
+                new ObjectMapper().writeValue(response.getOutputStream(), res);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     @GetMapping("/token/refresh")

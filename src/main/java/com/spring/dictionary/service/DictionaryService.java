@@ -51,4 +51,24 @@ public class DictionaryService {
         Language toLanguage = convertLanguage(translation.getToLanguageCode());
         return dictionaryRepository.getTranslation(translation.getWord(), language, toLanguage);
     }
+
+
+
+    public void deleteWord(String word, String lang) {
+        Language language = convertLanguage(lang);
+        dictionaryRepository.deleteWord(word, language);
+    }
+
+
+    public Word changeWord(String word, String lang, Word newWord) {
+        Language language = convertLanguage(lang);
+        return dictionaryRepository.changeWord(word, language, newWord);
+    }
+
+
+
+    public void addWord(List<String> words, List<Word> objects) {
+        dictionaryRepository.addWord(words, objects);
+
+    }
 }

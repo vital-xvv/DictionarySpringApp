@@ -39,12 +39,23 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/user/token/refresh").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers( "/swagger-ui/**",
+                        "/api-docs",
+                        "/swagger-resources/**",
+                        "/swagger-ui.html",
+                        "/webjars/**" ,
+                        "/swagger.json")
+                .permitAll()
+                .antMatchers("/thymeleaf/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/user/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.POST, "/dictionary/api/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().anyRequest().authenticated().and()
+                .antMatchers(HttpMethod.POST, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/dictionary/**").permitAll();
+         http.authorizeRequests().anyRequest().authenticated().and()
                 .addFilter(new AuthenticationFilter(authenticationManagerBean()))
                 .addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+       //http.headers().contentSecurityPolicy("script-src 'sef'");
     }
 
     @Override
