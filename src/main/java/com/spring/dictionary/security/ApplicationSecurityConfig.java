@@ -46,11 +46,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**" ,
                         "/swagger.json")
                 .permitAll()
-                .antMatchers("/thymeleaf/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/user/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/dictionary/**").permitAll();
+                .antMatchers(HttpMethod.GET, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER");
          http.authorizeRequests().anyRequest().authenticated().and()
                 .addFilter(new AuthenticationFilter(authenticationManagerBean()))
                 .addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

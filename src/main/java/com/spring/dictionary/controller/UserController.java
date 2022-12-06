@@ -8,7 +8,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.dictionary.actors.Role;
 import com.spring.dictionary.actors.User;
 import com.spring.dictionary.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -29,23 +38,123 @@ import static org.springframework.http.HttpStatus.*;
 public class UserController {
     private final UserService userService;
 
+
+    @Operation(
+            tags={"User management operations"},
+            summary = "GET request to retrieve all registered users",
+            responses = {@ApiResponse(responseCode = "200", content = @Content( examples = {@ExampleObject(name = "Example", value =
+                    "[\n" +
+                            "    {\n" +
+                            "        \"id\": 3,\n" +
+                            "        \"firstName\": \"John\",\n" +
+                            "        \"lastName\": \"Smith\",\n" +
+                            "        \"username\": \"john\",\n" +
+                            "        \"password\": \"$2a$10$fzJ7.AIatpwbummB7L8NxO7tWmeJmfahIif91qqeCsqcPWlFSoCUq\",\n" +
+                            "        \"roles\": [\n" +
+                            "            {\n" +
+                            "                \"id\": 1,\n" +
+                            "                \"name\": \"ROLE_ADMIN\"\n" +
+                            "            }\n" +
+                            "        ]\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"id\": 4,\n" +
+                            "        \"firstName\": \"Maggie\",\n" +
+                            "        \"lastName\": \"Stone\",\n" +
+                            "        \"username\": \"magforever\",\n" +
+                            "        \"password\": \"$2a$10$hUqz.16egeP8baOXRVcy/OwbdhzNcodZiTZCPjFyR.hLlIlecAV66\",\n" +
+                            "        \"roles\": [\n" +
+                            "            {\n" +
+                            "                \"id\": 2,\n" +
+                            "                \"name\": \"ROLE_USER\"\n" +
+                            "            }\n" +
+                            "        ]\n" +
+                            "    }]")},
+                    mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
          return ResponseEntity.ok().body(userService.getAllUsers());
      }
 
+     @Operation(
+             tags={"User management operations"},
+             summary = "GET request to retrieve a user info by a specified username",
+             description = "Uses path variable that contains a username",
+             responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = User.class),
+                     mediaType = MediaType.APPLICATION_JSON_VALUE,
+                     examples = {@ExampleObject(name = "Examle", value = "{\n" +
+                             "        \"id\": 4,\n" +
+                             "        \"firstName\": \"Maggie\",\n" +
+                             "        \"lastName\": \"Stone\",\n" +
+                             "        \"username\": \"magforever\",\n" +
+                             "        \"password\": \"$2a$10$hUqz.16egeP8baOXRVcy/OwbdhzNcodZiTZCPjFyR.hLlIlecAV66\",\n" +
+                             "        \"roles\": [\n" +
+                             "            {\n" +
+                             "                \"id\": 2,\n" +
+                             "                \"name\": \"ROLE_USER\"\n" +
+                             "            }\n" +
+                             "        ]\n" +
+                             "    }")}))},
+             security = {@SecurityRequirement(name = "BearerJWT")}
+     )
     @GetMapping("/{username}")
     public ResponseEntity<User> saveRole(@PathVariable("username") String username) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().toUriString());
         return ResponseEntity.created(uri).body(userService.getUser(username));
     }
 
+    @Operation(
+            tags={"User management operations"},
+            summary = "POST request to create a new user role",
+            description = "Uses request body with structure of the Role class.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = Role.class),
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    examples = {@ExampleObject(name = "Example", value = "{ \n" +
+                            "    \"id\":null,\n" +
+                            "    \"name\": \"ROLE_ANONYMOUS\"\n" +
+                            "}")})),
+            responses = {@ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = User.class),
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    examples = {@ExampleObject(name = "Examle", value = "{\n" +
+                            "    \"id\": 14,\n" +
+                            "    \"name\": \"ROLE_ANONYMOUS\"\n" +
+                            "}")}))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/role/save").toUriString());
+        URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
+
+
+    @Operation(
+            tags={"User management operations"},
+            summary = "PUT request to add a role to a user with a particular username",
+            description = "Uses two path variables to define the user and a role that will be added to the user' roles.\nA single role can have three values:" +
+                    " ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS.",
+            parameters = {@Parameter(name = "username", required = true, example = "foxigun"), @Parameter(name = "roleName", required = true, example = "ROLE_USER")},
+            responses = {@ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = User.class),
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    examples = {@ExampleObject(name = "Examle", value = "{\n" +
+                            "    \"id\": 13,\n" +
+                            "    \"firstName\": \"Megan\",\n" +
+                            "    \"lastName\": \"Fox\",\n" +
+                            "    \"username\": \"foxigun\",\n" +
+                            "    \"password\": \"$2a$10$z7z6MaZMyGOcUBR.VtPJ.OSW3Ts.X9VTZHyiCpZqBgne07GyzDhAS\",\n" +
+                            "    \"roles\": [\n" +
+                            "        {\n" +
+                            "            \"id\": 2,\n" +
+                            "            \"name\": \"ROLE_USER\"\n" +
+                            "        }\n" +
+                            "    ]\n" +
+                            "}")}))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+
+    )
     @PutMapping("/add/role/{username}/{roleName}")
     public ResponseEntity<User> saveRole(@PathVariable("username") String username, @PathVariable("roleName") String roleName) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add/role").toUriString());
@@ -54,27 +163,60 @@ public class UserController {
     }
 
 
+    @Operation(
+            tags={"User management operations"},
+            summary = "POST request to create a new user",
+            description = "Uses request body with structure of the User class.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = User.class),
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    examples = {@ExampleObject(name = "Example", value = "{ \n" +
+                            "    \"id\":null,\n" +
+                            "    \"firstName\":\"Megan\",    \n" +
+                            "    \"lastName\":\"Fox\",\n" +
+                            "    \"username\":\"foxigun\",\n" +
+                            "    \"password\":\"1111\",\n" +
+                            "    \"roles\": []\n" +
+                            "}")})),
+            responses = {@ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = User.class),
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    examples = {@ExampleObject(name = "Examle", value = "{\n" +
+                            "    \"id\": 13,\n" +
+                            "    \"firstName\": \"Megan\",\n" +
+                            "    \"lastName\": \"Fox\",\n" +
+                            "    \"username\": \"foxigun\",\n" +
+                            "    \"password\": \"$2a$10$z7z6MaZMyGOcUBR.VtPJ.OSW3Ts.X9VTZHyiCpZqBgne07GyzDhAS\",\n" +
+                            "    \"roles\": []\n" +
+                            "}")}))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/user/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
-    @DeleteMapping("/user/delete")
-    public void deleteUser(HttpServletResponse response, @RequestBody User user) {
+
+    @Operation(
+            tags={"User management operations"},
+            summary = "DELETE request to delete a user with a particular username",
+            description = "Uses path variable to define which user will be deleted",
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
+    @DeleteMapping("/user/delete/{username}")
+    public void deleteUser(HttpServletResponse response,  @PathVariable("username") String username) {
         Map<String, String> res = new HashMap<>();
         try{
-            userService.deleteUser(user);
+            userService.deleteUserByUsername(username);
             response.setStatus(ACCEPTED.value());
             res.put("status", "200");
-            res.put("message", "Successfully deleted user " + user.getUsername());
+            res.put("message", "Successfully deleted user " + username);
             response.setContentType("application/json");
             new ObjectMapper().writeValue(response.getOutputStream(), res);
         }
         catch (Exception e) {
             response.setStatus(NOT_FOUND.value());
             res.put("status", "404");
-            res.put("message", "User " + user.getUsername() + " not found");
+            res.put("message", "User " + username + " not found");
             response.setContentType("application/json");
             try {
                 new ObjectMapper().writeValue(response.getOutputStream(), res);
@@ -84,6 +226,15 @@ public class UserController {
         }
     }
 
+    @Operation(
+            tags={"User management operations"},
+            summary = "GET request to refresh user's access token using Refresh-token",
+            description = "Request must contain a header \"Authorization\" containing Refresh-token starting with \"Bearer \"",
+            parameters = {@Parameter(name = "Authorization", in = ParameterIn.HEADER)},
+            responses = {@ApiResponse(responseCode = "202", content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
