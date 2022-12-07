@@ -1,5 +1,6 @@
 package com.spring.dictionary.service;
 
+import com.spring.dictionary.entity.PageOfWords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.spring.dictionary.repository.DictionaryRepository;
@@ -70,5 +71,20 @@ public class DictionaryService {
     public void addWord(List<String> words, List<Word> objects) {
         dictionaryRepository.addWord(words, objects);
 
+    }
+
+    public PageOfWords findWordsWithPagination(int offset, int pageSize, String lang) {
+        Language language = convertLanguage(lang);
+        return dictionaryRepository.findWordsWithPagination(offset, pageSize, language);
+    }
+
+    public List<Word> findWordsFilterByPartOfSpeech(String partOfSpeech, String lang, boolean reverse) {
+        Language language = convertLanguage(lang);
+        return dictionaryRepository.findWordsFilterByPartOfSpeech(partOfSpeech, language, reverse);
+    }
+
+    public List<Word> findWordsFilterByStartsWith(String startsWith, String lang, boolean reverse) {
+        Language language = convertLanguage(lang);
+        return dictionaryRepository.findWordsFilterByStartsWith(startsWith, language, reverse);
     }
 }

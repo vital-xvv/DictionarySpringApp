@@ -1,7 +1,6 @@
 package com.spring.dictionary.controller;
 
-import com.spring.dictionary.entity.DictRowDTO;
-import com.spring.dictionary.entity.WordDTO;
+import com.spring.dictionary.entity.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,8 +11,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import com.spring.dictionary.entity.Translation;
-import com.spring.dictionary.entity.Word;
 import com.spring.dictionary.service.DictionaryService;
 
 import java.util.List;
@@ -163,5 +160,45 @@ public class DictionaryController {
     @PostMapping("/add/word")
     public void addWord(@RequestBody DictRowDTO dictRowDTO) {
         dictionaryService.addWord(dictRowDTO.getWords(), dictRowDTO.getObjects());
+    }
+
+    @Operation (
+            tags={"DictionaryAPI Pagination and Filtering"},
+            summary = "GET request to retrieve pages of words with exact size and page number.",
+            description = "Request demands only one path variable containing needed language code",
+            parameters = {@Parameter(name = "lang", description = "It contains lowercase language code"),
+                          @Parameter(name="offset", description = "Contains a page number but decremented."),
+                          @Parameter(name = "pageSize", description = "Keeps a value of number of needed elements.")},
+            responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = PageOfWords.class)))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
+    @GetMapping("/words/{offset}/{pageSize}/{lang}")
+    public PageOfWords findWordsWithPagination(@PathVariable Integer offset, @PathVariable Integer pageSize, @PathVariable String lang){
+        return dictionaryService.findWordsWithPagination(offset, pageSize, lang);
+    }
+
+
+    @Operation (
+            tags={"DictionaryAPI Pagination and Filtering"},
+            summary = "POST request to retrieve filtered list of words by partOfSpeech property.",
+            description = "Request demands request body of FilterDTO class. All properties must have some value including null.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = FilterDTO.class))),
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
+    @PostMapping("/words/filter/by/partOfSpeech")
+    public List<Word> findWordsFilterByPartOfSpeech(@RequestBody FilterDTO filterDTO) {
+        return dictionaryService.findWordsFilterByPartOfSpeech(filterDTO.getPartOfSpeech(), filterDTO.getLangCode(), filterDTO.isReverse());
+    }
+
+    @Operation (
+            tags={"DictionaryAPI Pagination and Filtering"},
+            summary = "POST request to retrieve filtered list of words by starting letters.",
+            description = "Request demands request body of FilterDTO class. All properties must have some value including null.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = FilterDTO.class))),
+            security = {@SecurityRequirement(name = "BearerJWT")}
+    )
+    @PostMapping("/words/filter/by/startsWith")
+    public List<Word> findWordsThatStartsWith(@RequestBody FilterDTO filterDTO) {
+        return dictionaryService.findWordsFilterByStartsWith(filterDTO.getStartsWith(), filterDTO.getLangCode(), filterDTO.isReverse());
     }
 }
