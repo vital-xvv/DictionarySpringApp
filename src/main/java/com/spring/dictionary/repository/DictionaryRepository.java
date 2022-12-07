@@ -2,6 +2,7 @@ package com.spring.dictionary.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.dictionary.entity.PageOfWords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.spring.dictionary.entity.Language;
@@ -166,4 +167,96 @@ public class DictionaryRepository {
     }
 
 
+    public PageOfWords findWordsWithPagination(int offset, int pageSize, Language language) {
+        PreparedStatement statement;
+        PreparedStatement statement2;
+        int numberOfPages;
+        int numberOfWords;
+        int pageNumber = offset + 1;
+        List<Word> words = new ArrayList<>();
+        PageOfWords page = new PageOfWords();
+
+        try {
+            statement = connection.prepareStatement("SELECT COUNT(*) as number FROM words");
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            numberOfWords = resultSet.getInt("number");
+            if(numberOfWords % pageSize == 0) {
+                numberOfPages = numberOfWords / pageSize;
+            } else {
+                numberOfPages = numberOfWords / pageSize + 1;
+            }
+            String SQL = "SELECT " + language.countryCode +"_json FROM words LIMIT ? OFFSET ?";
+            statement2 = connection.prepareStatement(SQL);
+
+            statement2.setInt(1, pageSize);
+            statement2.setInt(2, pageSize * offset);
+
+            ResultSet resultSet1 = statement2.executeQuery();
+
+            while(resultSet1.next()) {
+                Word newWord = wordService.getWordFromJson(resultSet1.getString(language.countryCode+"_json"));
+                words.add(newWord);
+            }
+
+            page.setWords(words);
+            page.setPageNumber(pageNumber);
+            page.setNumberOfPages(numberOfPages);
+            page.setNumberOfWords(numberOfWords);
+
+            return page;
+
+
+        } catch (SQLException e) {
+            System.err.println("Database error returning PageOfWords " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Word> findWordsFilterByPartOfSpeech(String partOfSpeech, Language language, boolean reverse) {
+        List<Word> words = new ArrayList<>();
+        String SQL = "SELECT " + language.countryCode + "_json FROM words";
+        try {
+            PreparedStatement statement = connection.prepareStatement(SQL);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Word newWord = wordService.getWordFromJson(resultSet.getString(language.countryCode+"_json"));
+                if(!reverse) {
+                    if(newWord.getPartOfSpeech().trim().equals(partOfSpeech)) words.add(newWord);
+
+                }
+                else {
+                    if(!newWord.getPartOfSpeech().trim().equals(partOfSpeech)) words.add(newWord);
+                }
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return words;
+    }
+
+
+    public List<Word> findWordsFilterByStartsWith(String startsWith, Language language, boolean reverse) {
+        List<Word> words = new ArrayList<>();
+        String SQL = "SELECT " + language.countryCode + "_json FROM words";
+        try {
+            PreparedStatement statement = connection.prepareStatement(SQL);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Word newWord = wordService.getWordFromJson(resultSet.getString(language.countryCode+"_json"));
+                if(!reverse) {
+                    if(newWord.getWord().trim().startsWith(startsWith)) words.add(newWord);
+
+                }
+                else {
+                    if(!newWord.getWord().trim().startsWith(startsWith)) words.add(newWord);
+                }
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return words;
+    }
 }
