@@ -4,8 +4,12 @@ const baseUrl = process.env.REACT_APP_URL;
 export const useService = () => {
   const {request, process, setProcess, clearError} = useFetchAxios()
 
-  const getWord = (fromCode, word) => {
-    return request(`${baseUrl}/dictionary/api/${fromCode}/${word}`);
+  const getWord = (langCode, word) => {
+    const payload = {
+      word,
+      langCode
+    }
+    return request(`${baseUrl}/api/dictionary/get/word`, 'POST', payload);
   }
 
   const getTranslation = (data) => {

@@ -1,2 +1,22 @@
 .admin-page {
+  .main-heading {
+    margin-top: 20px;
+  }
+  .main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+
 }
