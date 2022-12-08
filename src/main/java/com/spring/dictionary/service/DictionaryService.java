@@ -1,5 +1,6 @@
 package com.spring.dictionary.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.spring.dictionary.entity.PageOfWords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class DictionaryService {
     }
 
 
-    public Word changeWord(String word, String lang, Word newWord) {
+    public Word changeWord(String word, String lang, Word newWord) throws JsonProcessingException {
         Language language = convertLanguage(lang);
         return dictionaryRepository.changeWord(word, language, newWord);
     }

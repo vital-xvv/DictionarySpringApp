@@ -1,5 +1,6 @@
 package com.spring.dictionary.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.spring.dictionary.entity.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -145,7 +146,7 @@ public class DictionaryController {
             security = {@SecurityRequirement(name = "BearerJWT")}
     )
     @PutMapping("/change/word")
-    public Word changeWord(@RequestBody WordDTO wordDTO) {
+    public Word changeWord(@RequestBody WordDTO wordDTO) throws JsonProcessingException {
         return dictionaryService.changeWord(wordDTO.getWord(), wordDTO.getLangCode(), wordDTO.getWordObject());
     }
 
