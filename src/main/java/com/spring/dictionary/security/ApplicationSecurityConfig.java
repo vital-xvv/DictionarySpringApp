@@ -47,9 +47,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger.json")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER");
+                .antMatchers(HttpMethod.GET, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ANONYMOUS");
          http.authorizeRequests().anyRequest().authenticated().and()
                 .addFilter(new AuthenticationFilter(authenticationManagerBean()))
                 .addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

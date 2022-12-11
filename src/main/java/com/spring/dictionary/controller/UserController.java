@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -125,6 +126,7 @@ public class UserController {
             security = {@SecurityRequirement(name = "BearerJWT")}
     )
     @PostMapping("/role/save")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
@@ -190,6 +192,7 @@ public class UserController {
                             "}")}))},
             security = {@SecurityRequirement(name = "BearerJWT")}
     )
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN", "ROLE_ANONYMOUS"})
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/user/save").toUriString());
@@ -275,7 +278,7 @@ public class UserController {
     }
 
     @Operation(
-            tags={"User Pagination and Filtering"},
+            tags={"User Pagination and Sorting"},
             summary = "GET request to get a list of users with a particular size and page number",
             description = "Path variable offset means a number of page starting from 0, pageSize means number of elements.",
             responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Page.class),
@@ -288,7 +291,7 @@ public class UserController {
     }
 
     @Operation(
-            tags={"User Pagination and Filtering"},
+            tags={"User Pagination and Sorting"},
             summary = "GET request to get a filtered list of users by a particular field.",
             description = "Path variable fieled means a property a filtering will be done by.",
             responses = {@ApiResponse(responseCode = "200", content = @Content(
@@ -301,7 +304,7 @@ public class UserController {
     }
 
     @Operation(
-            tags={"User Pagination and Filtering"},
+            tags={"User Pagination and Sorting"},
             summary = "GET request to get a filtered list of users by a particular field with pagination.",
             description = "Path variable offset means a number of page starting from 0, pageSize means number of elements, field means a property a filtering will be done by.",
             responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Page.class),
