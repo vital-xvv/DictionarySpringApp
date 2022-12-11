@@ -189,11 +189,8 @@ public class UserController {
                             "    \"username\": \"foxigun\",\n" +
                             "    \"password\": \"$2a$10$z7z6MaZMyGOcUBR.VtPJ.OSW3Ts.X9VTZHyiCpZqBgne07GyzDhAS\",\n" +
                             "    \"roles\": []\n" +
-                            "}")}))},
-            security = {@SecurityRequirement(name = "BearerJWT")}
+                            "}")}))}
     )
-
-    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN", "ROLE_ANONYMOUS"})
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/user/save").toUriString());
