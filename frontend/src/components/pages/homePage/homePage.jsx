@@ -1,6 +1,6 @@
 import {capitalize} from '../../../utils/funcs';
 import useService from '../../../services/useService';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import './homePage.scss';
 import SearchBox from '../../searchBox/searchBox';
 import WordCard from '../../wordCard/wordCard';
@@ -10,8 +10,13 @@ const homePage = () => {
   const [word, setWord] = useState();
   const [searchRequest, setSearchRequest] = useState('');
   const [translation, setTranslation] = useState();
+  const {getWord, process, getTranslation, getCurrentUser} = useService();
 
-  const {getWord, process, getTranslation} = useService();
+  useEffect( () => {
+    getCurrentUser()
+  }, []);
+
+
 
   const setWordInfo = async (selectedLanguage) => {
     const res = await getWord(selectedLanguage, searchRequest);
