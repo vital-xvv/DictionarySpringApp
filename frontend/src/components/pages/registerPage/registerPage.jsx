@@ -5,7 +5,9 @@ import './registerPage.scss'
 import useService from "../../../services/useService";
 
 const registerPage = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [repPassword, setRepPassword] = useState('');
     const {register} = useService();
@@ -13,14 +15,16 @@ const registerPage = () => {
 
     const handleRegister = () => {
         if(password !== repPassword) return alert('Passwords don\'t match!');
-        register(email, password);
+        register(username, firstName, lastName, password);
         navigate('/login');
     }
 
     return (<div className="register-page">
         <div className="main-heading">Register</div>
         <div className="main-container">
-            <TextField variant="outlined" type="email" onChange={(e) => setEmail(e.target.value)} label="Email"/>
+            <TextField variant="outlined" type="text" onChange={(e) => setUsername(e.target.value)} label="Username"/>
+            <TextField variant="outlined" type="text" onChange={(e) => setFirstName(e.target.value)} label="First Name"/>
+            <TextField variant="outlined" type="text" onChange={(e) => setLastName(e.target.value)} label="Last Name"/>
             <TextField variant="outlined" type="password" onChange={(e) => setPassword(e.target.value)} label="Password"/>
             <TextField variant="outlined" type="password" onChange={(e) => setRepPassword(e.target.value)} label="Repeat Password"/>
             <div className="info">Already have an account? <RouterLink to={'/login'}>Login</RouterLink>
