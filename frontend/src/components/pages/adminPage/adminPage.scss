@@ -6,6 +6,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .input-group {
+      display: flex;
+      gap: 1rem;
+    }
   }
   .card-content {
     display: flex;
