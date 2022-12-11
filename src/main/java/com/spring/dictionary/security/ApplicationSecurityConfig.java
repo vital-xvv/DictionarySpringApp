@@ -48,7 +48,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ANONYMOUS");
+                .antMatchers(HttpMethod.GET, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER");
          http.authorizeRequests().anyRequest().authenticated().and()
                 .addFilter(new AuthenticationFilter(authenticationManagerBean()))
                 .addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

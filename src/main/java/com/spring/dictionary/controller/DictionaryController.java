@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import javax.annotation.security.RolesAllowed;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -53,6 +54,7 @@ public class DictionaryController {
                             "    }")}))},
             security = {@SecurityRequirement(name = "BearerJWT")}
     )
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN", "ROLE_ANONYMOUS"})
     @PostMapping("/get/word")
     public Word getWord(@RequestBody WordDTO wordDTO){
        return dictionaryService.getWord(wordDTO.getWord(), wordDTO.getLangCode());

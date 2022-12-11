@@ -192,6 +192,7 @@ public class UserController {
                             "}")}))},
             security = {@SecurityRequirement(name = "BearerJWT")}
     )
+
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN", "ROLE_ANONYMOUS"})
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
