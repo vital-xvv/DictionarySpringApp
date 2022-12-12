@@ -107,5 +107,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAll(pageable);
     }
 
+    @Override
+    @Transactional
+    public void registerNewUser(User user) {
+        saveUser(user);
+        addRoleToUser(user.getUsername(), "ROLE_USER");
+    }
 
 }

@@ -189,8 +189,11 @@ public class UserController {
                             "    \"username\": \"foxigun\",\n" +
                             "    \"password\": \"$2a$10$z7z6MaZMyGOcUBR.VtPJ.OSW3Ts.X9VTZHyiCpZqBgne07GyzDhAS\",\n" +
                             "    \"roles\": []\n" +
-                            "}")}))}
+                            "}")}))},
+            security = {@SecurityRequirement(name = "BearerJWT")}
+
     )
+    @RolesAllowed("ROLE_ADMIN")
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/user/save").toUriString());
@@ -312,6 +315,19 @@ public class UserController {
     @GetMapping("/users/pagination/filter/{offset}/{pageSize}/{field}")
     public Page<User> findUsersWithPaginationAndFiltering(@PathVariable Integer offset, @PathVariable Integer pageSize, @PathVariable String field) {
         return userService.findUsersWithPaginationAndFiltering(offset, pageSize, field);
+    }
+
+    @Operation(
+            tags={"User management operations"},
+            summary = "POST request to register a new user(use for new users registration)",
+            description = "Request must contain a request body with User structure, all fields shouldn't be bull except for id",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = User.class),
+                    mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            responses = {@ApiResponse(responseCode = "201")}
+    )
+    @PostMapping("/register")
+    public void registerNewUser(@RequestBody User user){
+        userService.registerNewUser(user);
     }
 
 }

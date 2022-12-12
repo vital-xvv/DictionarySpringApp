@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.spring.dictionary.entity.Language;
 import com.spring.dictionary.entity.Word;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -72,6 +73,7 @@ public class DictionaryRepository {
     }
 
 
+    @Transactional
     public PageOfWords findWordsWithPagination(int offset, int pageSize, Language language) {
         int numberOfPages;
         int numberOfWords;

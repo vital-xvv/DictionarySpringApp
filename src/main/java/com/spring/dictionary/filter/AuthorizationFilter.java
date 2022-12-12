@@ -26,7 +26,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class AuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(!request.getServletPath().contains("/api/user") && !request.getServletPath().contains("/api/dictionary") ||  request.getServletPath().equals("/api/user/user/save")){
+        if(!request.getServletPath().contains("/api/user") && !request.getServletPath().contains("/api/dictionary") ||  request.getServletPath().equals("/api/user/register")){
             filterChain.doFilter(request, response);
         }
         else {
