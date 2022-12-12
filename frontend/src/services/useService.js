@@ -23,8 +23,8 @@ export const useService = () => {
     const userName = localStorage.getItem('username')
     const res = await request(`${baseUrl}/user/${userName}`);
     localStorage.setItem('role', res.roles[0].name)
-    if(res.firstName && res.secondName) {
-      localStorage.setItem('username', res.firstName + res.secondName)
+    if (res.firstName && res.lastName) {
+      localStorage.setItem('displayName', res.firstName + ' ' + res.lastName)
     }
   }
 
@@ -38,20 +38,17 @@ export const useService = () => {
     }
   }
 
-  const register = async (email, password) => {
+  const register = async (username, firstName, lastName, password) => {
     const payload = {
       id: null,
-      firstName: null,
-      secondName: null,
-      roles: [{
-        id: 2,
-        name: "ROLE_USER"
-      }],
-      email,
-      password
+      username,
+      password,
+      firstName,
+      lastName,
+      roles: [],
     }
     try {
-      await request(`${baseUrl}/user/user/save`, 'POST', payload);
+      await request(`${baseUrl}/user/register`, 'POST', payload);
     } catch (e) {
       alert('Something went wrong, try again :(')
     }
@@ -59,6 +56,33 @@ export const useService = () => {
 
   const getWords = async (lang) => {
     return await request(`${baseUrl}/dictionary/words/0/20/${lang}`)
+  }
+
+  const addWord = async (word) => {
+    try {
+      await request(`${baseUrl}/dictionary/add/word`, 'POST', word)
+    } catch (e) {
+      alert('Error')
+    }
+  }
+
+  const changeWord = async (word) => {
+    try {
+      await request(`${baseUrl}/dictionary/change/word`, 'POST', word)
+    } catch (e) {
+      alert('Error')
+    }
+  }
+
+  const deleteWord = async (word, langCode) => {
+    const payload = {
+      word,
+      langCode,
+      wordObject: null
+    }
+    if (confirm('Delete?')) {
+      return await request(`${baseUrl}/dictionary/delete/word`, 'DELETE', payload)
+    }
   }
 
   return {
@@ -72,7 +96,10 @@ export const useService = () => {
     login,
     getCurrentUser,
     register,
-    getWords
+    getWords,
+    addWord,
+    changeWord,
+    deleteWord
   }
 }
 

@@ -1,6 +1,6 @@
 import {Button, Card, CardContent, MenuItem, Select, TextField, Typography} from "@mui/material";
 import './adminPage.scss'
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import useService from "../../../services/useService";
 
@@ -8,7 +8,7 @@ const adminPage = () => {
   const navigate = useNavigate()
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [words, setWords] = useState([]);
-  const {getWords} = useService()
+  const {getWords, deleteWord} = useService()
   useEffect(() => {
     if (localStorage.getItem('role') !== 'ROLE_ADMIN') {
       return navigate('/login')
@@ -44,26 +44,34 @@ const adminPage = () => {
             <MenuItem value={'es'}>Español</MenuItem>
           </Select>
         </div>
-        <div><Button variant="contained" color="primary">Add Word</Button></div>
+        <div><Link to={'add'}><Button variant="contained" color="primary">Add Word</Button></Link></div>
       </div>
       {words.map((word, idx) => (
-        <Card variant="outlined" key={idx}>
-          <CardContent className="card-content">
-            <div><Typography variant="h5" component="div">
-              {word.word}
-            </Typography>
-              <Typography sx={{mb: 1.5}} color="text.secondary">
-                {word.partOfSpeech}
+          <Card variant="outlined" key={idx}>
+            <CardContent className="card-content">
+              <div><Typography variant="h5" component="div">
+                {word.word}
               </Typography>
-              <Typography variant="body2">
-                {word.meaning}
-              </Typography></div>
-            <div className="btn-group">
-              <Typography><Button variant="outlined">Edit</Button></Typography>
-              <Typography><Button variant="outlined" color="error">Remove</Button></Typography>
-            </div>
-          </CardContent>
-        </Card>)
+                <Typography sx={{mb: 1.5}} color="text.secondary">
+                  {word.partOfSpeech}
+                </Typography>
+                <Typography variant="body2">
+                  {word.meaning}
+                </Typography></div>
+              <div className="btn-group">
+                <Typography>
+                  <Button variant="outlined"
+                          onClick={() => navigate(`${word.word}`, {state: {lang: selectedLanguage}})}
+                  >Edit</Button>
+                </Typography>
+                <Typography>
+                  <Button variant="outlined" color="error"
+                          onClick={() => deleteWord(word.word, selectedLanguage)}
+                  >Remove</Button>
+                </Typography>
+              </div>
+            </CardContent>
+          </Card>)
       )}
     </div>
   </div>);
