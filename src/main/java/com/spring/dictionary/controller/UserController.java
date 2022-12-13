@@ -126,7 +126,6 @@ public class UserController {
             security = {@SecurityRequirement(name = "BearerJWT")}
     )
     @PostMapping("/role/save")
-    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
@@ -193,7 +192,6 @@ public class UserController {
             security = {@SecurityRequirement(name = "BearerJWT")}
 
     )
-    @RolesAllowed("ROLE_ADMIN")
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         URI uri  = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/api/user/save").toUriString());

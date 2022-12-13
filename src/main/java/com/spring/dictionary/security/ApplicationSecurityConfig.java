@@ -46,9 +46,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**" ,
                         "/swagger.json").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/user/register").permitAll()
+                .antMatchers(HttpMethod.GET, "/account/**").hasAnyAuthority("ROLE_USER")
+                .antMatchers(HttpMethod.PUT, "/account/**").hasAnyAuthority("ROLE_USER")
                 .antMatchers(HttpMethod.GET, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/user/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/dictionary/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER");
          http.authorizeRequests().anyRequest().authenticated().and()
                 .addFilter(new AuthenticationFilter(authenticationManagerBean()))

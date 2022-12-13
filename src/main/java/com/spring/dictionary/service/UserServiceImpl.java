@@ -112,6 +112,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void registerNewUser(User user) {
         saveUser(user);
         addRoleToUser(user.getUsername(), "ROLE_USER");
+        log.info("Saving new user {} to the database with role {}", user.getUsername(), "ROLE_USER");
     }
+
+    public User findUserInfoByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Transactional
+    public void changeUserPasswordByUsername(String username, String oldPassword, String newPassword){
+        User userInfo = userRepository.findByUsername(username);
+        boolean passwordsCorrespond = passwordEncoder.matches(oldPassword, userInfo.getPassword());
+        if(passwordsCorrespond) userInfo.setPassword(passwordEncoder.encode(newPassword));
+        log.info("Changed password for user {}.", userInfo.getUsername());
+    }
+
+    public void updateUserFirstNameAndLastNameByUsername(String firstName, String lastName, String username){
+        userRepository.updateUserFirstNameAndLastNameByUsername(firstName, lastName, username);
+    }
+
 
 }
