@@ -19,8 +19,8 @@ const homePage = () => {
 
 
   const setWordInfo = async (selectedLanguage) => {
-    const res = await getWord(selectedLanguage, searchRequest);
-    setWord(res);
+    const {data} = await getWord(selectedLanguage, searchRequest);
+    setWord(data);
   };
 
   const setTranslationResult = async (selectedLanguage, translateLanguage) => {
@@ -29,8 +29,8 @@ const homePage = () => {
       fromLanguageCode: selectedLanguage,
       toLanguageCode: translateLanguage
     };
-    const res = await getTranslation(payload);
-    setTranslation(res);
+    const {data} = await getTranslation(payload);
+    setTranslation(data);
   };
 
   return (

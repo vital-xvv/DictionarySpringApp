@@ -9,6 +9,8 @@ html, body {
   margin: 0;
   padding: 0;
   background: linear-gradient(-45deg, rgb(67, 188, 204), rgb(21, 37, 131));
+  background-repeat: repeat-y;
+  //overflow-y: hidden;
 }
 
 .main-container {

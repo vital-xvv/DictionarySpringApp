@@ -18,7 +18,8 @@ const Form = (props) => {
     setSynonyms,
     handleFetchWord,
     inEditMode,
-    lang
+    lang,
+    params
   } = props;
 
   const {addWord, changeWord} = useService();
@@ -27,13 +28,13 @@ const Form = (props) => {
   useEffect(() => {
     if (inEditMode) {
       (async function () {
-        const res = await handleFetchWord()
-        setWord((prev) => ({...prev, [lang]: res.word}));
-        setTranscription((prev) => ({...prev, [lang]: res.transcription}));
-        setPartOfSpeech((prev) => ({...prev, [lang]: res.partOfSpeech}));
-        setMeaning((prev) => ({...prev, [lang]: res.meaning}));
-        setExample((prev) => ({...prev, [lang]: res.example}));
-        setSynonyms((prev) => ({...prev, [lang]: res.synonyms}));
+        const {data} = await handleFetchWord()
+        setWord((prev) => ({...prev, [lang]: data.word}));
+        setTranscription((prev) => ({...prev, [lang]: data.transcription}));
+        setPartOfSpeech((prev) => ({...prev, [lang]: data.partOfSpeech}));
+        setMeaning((prev) => ({...prev, [lang]: data.meaning}));
+        setExample((prev) => ({...prev, [lang]: data.example}));
+        setSynonyms((prev) => ({...prev, [lang]: data.synonyms}));
       })();
     }
   }, []);
@@ -45,7 +46,8 @@ const Form = (props) => {
 
   //genius cheeeck
   const checkPayload = () => {
-    if ([word, partOfSpeech, meaning, example].map(el => Object.values(el).some(el => !el.length)).every(el => el === false)) {
+    if ((inEditMode && [word, partOfSpeech, meaning, example].every(el => el[lang].length))
+        || [word, partOfSpeech, meaning, example].map(el => Object.values(el).some(el => !el.length)).every(el => el === false)) {
       return setIsSubmitDisabled(false)
     }
     setIsSubmitDisabled(true)
@@ -54,19 +56,32 @@ const Form = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const payload = {
-      words: Object.values(word),
-      objects:
-          Object.keys(word).map(lang => ({
-            word: word[lang],
-            transcription: transcription[lang],
-            example: example[lang],
-            audio: null,
-            synonyms: synonyms[lang],
-            meaning: meaning[lang],
-            partOfSpeech: partOfSpeech[lang],
-          }))
-    }
+    const payload = inEditMode ?
+      {
+        word: params.word,
+        langCode: lang,
+        wordObject: {
+          word: word[lang],
+          transcription: transcription[lang],
+          example: example[lang],
+          audio: null,
+          synonyms: synonyms[lang],
+          meaning: meaning[lang],
+          partOfSpeech: partOfSpeech[lang],
+        }
+      } : {
+            words: Object.values(word),
+            objects:
+              Object.keys(word).map(lang => ({
+                word: word[lang],
+                transcription: transcription[lang],
+                example: example[lang],
+                audio: null,
+                synonyms: synonyms[lang],
+                meaning: meaning[lang],
+                partOfSpeech: partOfSpeech[lang],
+              }))
+          }
     console.log(payload)
     inEditMode ? changeWord(payload) : addWord(payload)
   }

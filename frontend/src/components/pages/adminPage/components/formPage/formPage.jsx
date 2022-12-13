@@ -10,8 +10,8 @@ import {Box} from "@mui/system";
 const FormPage = () => {
   const params = useParams()
   const inEditMode = !!params.word;
-  const [selectedLang, setSelectedLang] = useState('en');
   const {state} = useLocation()
+  const [selectedLang, setSelectedLang] = useState(inEditMode ? state.lang : 'en');
   const {getWord} = useService()
   const [word, setWord] = useState({en: '', ua: '', es: ''});
   const [transcription, setTranscription] = useState({en: '', ua: '', es: ''});
@@ -39,7 +39,8 @@ const FormPage = () => {
     setSynonyms,
     handleFetchWord,
     inEditMode,
-    lang: selectedLang
+    lang: selectedLang,
+    params
   }
 
   const handleChange = (e, newValue) => {
@@ -47,15 +48,15 @@ const FormPage = () => {
   }
 
 
-  return <div className="word-form">
+  return <div className="form-page">
     <div className="main-heading">{inEditMode ? 'Edit Word' : 'Add Word'}</div>
     <div className="admin-container">
       <Box sx={{width: '100%', typography: 'body1'}}>
         <TabContext value={selectedLang}>
           <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
-            <Tab label="English" value="en"/>
-            <Tab label="Ukrainian" value="ua"/>
-            <Tab label="Espanol" value="es"/>
+            <Tab disabled={inEditMode && state.lang !== 'en'} label="English" value="en"/>
+            <Tab disabled={inEditMode && state.lang !== 'ua'} label="Ukrainian" value="ua"/>
+            <Tab disabled={inEditMode && state.lang !== 'es'} label="Espanol" value="es"/>
           </TabList>
 
           <TabPanel value="en"><Form {...props}/></TabPanel>

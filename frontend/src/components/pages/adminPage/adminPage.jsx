@@ -16,9 +16,10 @@ const adminPage = () => {
     handleFetchWords()
   }, []);
 
+
   const handleFetchWords = async (val = null) => {
-    const res = await getWords(val ? val : selectedLanguage);
-    setWords(res.words)
+    const {data} = await getWords(val ? val : selectedLanguage);
+    setWords(data.words)
   }
 
   return (<div className="admin-page">
@@ -66,7 +67,10 @@ const adminPage = () => {
                 </Typography>
                 <Typography>
                   <Button variant="outlined" color="error"
-                          onClick={() => deleteWord(word.word, selectedLanguage)}
+                          onClick={() => {
+                            deleteWord(word.word, selectedLanguage)
+                            handleFetchWords()
+                          }}
                   >Remove</Button>
                 </Typography>
               </div>
