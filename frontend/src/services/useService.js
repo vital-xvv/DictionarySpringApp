@@ -1,8 +1,10 @@
 import useFetchAxios from "../hooks/useFetchAxios";
+import {useNavigate} from "react-router-dom";
 
 const baseUrl = process.env.REACT_APP_URL;
 export const useService = () => {
-  const {request, process, setProcess, clearError} = useFetchAxios()
+  const {request, process, setProcess, clearError} = useFetchAxios();
+  const navigate = useNavigate()
 
   const getWord = (langCode, word) => {
     const payload = {
@@ -61,6 +63,7 @@ export const useService = () => {
   const addWord = async (word) => {
     try {
       await request(`${baseUrl}/dictionary/add/word`, 'POST', word)
+      navigate('/admin')
     } catch (e) {
       alert('Error')
     }
@@ -68,7 +71,7 @@ export const useService = () => {
 
   const changeWord = async (word) => {
     try {
-      await request(`${baseUrl}/dictionary/change/word`, 'POST', word)
+      await request(`${baseUrl}/dictionary/change/word`, 'PUT', word)
     } catch (e) {
       alert('Error')
     }
