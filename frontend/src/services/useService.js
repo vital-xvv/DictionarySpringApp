@@ -23,8 +23,8 @@ export const useService = () => {
 
   const getCurrentUser = async () => {
     const userName = localStorage.getItem('username')
-    const res = await request(`${baseUrl}/user/${userName}`);
-    localStorage.setItem('role', res.roles[0].name)
+    const res = await request(`http://localhost:8080/account/${userName}`);
+    // localStorage.setItem('role', res.roles[0].name)
     if (res.firstName && res.lastName) {
       localStorage.setItem('displayName', res.firstName + ' ' + res.lastName)
     }

@@ -56,18 +56,18 @@ const Form = (props) => {
     e.preventDefault()
     const payload = {
       words: Object.values(word),
-      objects: [
-        Object.keys(word).map(lang => ({
-          word: word[lang],
-          transcription: transcription[lang],
-          example: example[lang],
-          audio: null,
-          synonyms: synonyms[lang],
-          meaning: meaning[lang],
-          partOfSpeech: partOfSpeech[lang],
-        }))
-      ]
+      objects:
+          Object.keys(word).map(lang => ({
+            word: word[lang],
+            transcription: transcription[lang],
+            example: example[lang],
+            audio: null,
+            synonyms: synonyms[lang],
+            meaning: meaning[lang],
+            partOfSpeech: partOfSpeech[lang],
+          }))
     }
+    console.log(payload)
     inEditMode ? changeWord(payload) : addWord(payload)
   }
 
