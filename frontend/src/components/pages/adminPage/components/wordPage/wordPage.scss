@@ -1,0 +1,18 @@
+.word-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .admin-container {
+    width: 45%;
+    text-align: center;
+    padding: 0;
+    .word-card {
+      margin-top: 0;
+    }
+    .main-word {
+      margin-top: 0;
+    }
+  }
+}

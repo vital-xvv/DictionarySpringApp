@@ -1,7 +1,12 @@
-.word-form {
+.form-page {
+  .main-heading {
+    margin-top: 20px;
+  }
+  .admin-container {
+    width: 50%;
+  }
   .form {
-
-    padding: 2rem;
+    padding: 1rem;
     display: grid;
     gap: 1.5rem;
     grid-template-columns: 1fr 1fr 1fr;

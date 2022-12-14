@@ -23,17 +23,22 @@ export const useService = () => {
 
   const getCurrentUser = async () => {
     const userName = localStorage.getItem('username')
-    const res = await request(`${baseUrl}/user/${userName}`);
-    localStorage.setItem('role', res.roles[0].name)
-    if (res.firstName && res.lastName) {
-      localStorage.setItem('displayName', res.firstName + ' ' + res.lastName)
+    let res;
+    res = await request(`${baseUrl}/user/${userName}`);
+    if(res === undefined) {
+      res = await request(`http://localhost:8080/account/${userName}`);
+    }
+    const {data} = res
+    localStorage.setItem('role', data?.roles[0].name)
+    if (data.firstName && data.lastName) {
+      localStorage.setItem('displayName', data.firstName + ' ' + data.lastName)
     }
   }
 
   const login = async (email, password) => {
     try {
-      const res = await request(`http://localhost:8080/login?username=${email}&password=${password}`, 'POST')
-      localStorage.setItem('token', 'Bearer ' + res.access_token);
+      const {data} = await request(`http://localhost:8080/login?username=${email}&password=${password}`, 'POST')
+      localStorage.setItem('token', 'Bearer ' + data.access_token);
       localStorage.setItem('username', email);
     } catch (e) {
       alert('Something went wrong, try again :(')
@@ -72,6 +77,7 @@ export const useService = () => {
   const changeWord = async (word) => {
     try {
       await request(`${baseUrl}/dictionary/change/word`, 'PUT', word)
+      navigate('/admin')
     } catch (e) {
       alert('Error')
     }

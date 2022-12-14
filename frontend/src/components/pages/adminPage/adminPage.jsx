@@ -8,6 +8,7 @@ const adminPage = () => {
   const navigate = useNavigate()
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [words, setWords] = useState([]);
+  const [searchFilter, setSearchFilter] = useState('');
   const {getWords, deleteWord} = useService()
   useEffect(() => {
     if (localStorage.getItem('role') !== 'ROLE_ADMIN') {
@@ -17,8 +18,8 @@ const adminPage = () => {
   }, []);
 
   const handleFetchWords = async (val = null) => {
-    const res = await getWords(val ? val : selectedLanguage);
-    setWords(res.words)
+    const {data} = await getWords(val ? val : selectedLanguage);
+    setWords(data.words)
   }
 
   return (<div className="admin-page">
@@ -26,7 +27,7 @@ const adminPage = () => {
     <div className="admin-container">
       <div className="main-row">
         <div className="input-group">
-          <TextField label="Search" variant="outlined"/>
+          <TextField label="Search" variant="outlined" onChange={(e) => setSearchFilter(e.target.value)}/>
           <Select
               value={selectedLanguage}
               defaultValue={'language'}
@@ -46,32 +47,41 @@ const adminPage = () => {
         </div>
         <div><Link to={'add'}><Button variant="contained" color="primary">Add Word</Button></Link></div>
       </div>
-      {words.map((word, idx) => (
-          <Card variant="outlined" key={idx}>
-            <CardContent className="card-content">
-              <div><Typography variant="h5" component="div">
-                {word.word}
-              </Typography>
-                <Typography sx={{mb: 1.5}} color="text.secondary">
-                  {word.partOfSpeech}
-                </Typography>
-                <Typography variant="body2">
-                  {word.meaning}
-                </Typography></div>
-              <div className="btn-group">
-                <Typography>
+      {words
+          .filter(word => word.word.includes(searchFilter) || !searchFilter.length)
+          .map((word, idx) => (
+            <Card variant="outlined" key={idx}>
+              <CardContent className="card-content">
+                <div><Typography variant="h5" component="div">
                   <Button variant="outlined"
+                          color="secondary"
                           onClick={() => navigate(`${word.word}`, {state: {lang: selectedLanguage}})}
-                  >Edit</Button>
+                  >{word.word}</Button>
                 </Typography>
-                <Typography>
-                  <Button variant="outlined" color="error"
-                          onClick={() => deleteWord(word.word, selectedLanguage)}
-                  >Remove</Button>
-                </Typography>
-              </div>
-            </CardContent>
-          </Card>)
+                  <Typography sx={{mb: 1.5}} color="text.secondary">
+                    {word.partOfSpeech}
+                  </Typography>
+                  <Typography variant="body2">
+                    {word.meaning}
+                  </Typography></div>
+                <div className="btn-group">
+                  <Typography>
+                    <Button variant="outlined"
+                            onClick={() => navigate(`edit/${word.word}`, {state: {lang: selectedLanguage}})}
+                    >Edit</Button>
+                  </Typography>
+                  <Typography>
+                    <Button variant="outlined" color="error"
+                            onClick={() => {
+                              deleteWord(word.word, selectedLanguage)
+                              handleFetchWords()
+                            }}
+                    >Remove</Button>
+                  </Typography>
+                </div>
+              </CardContent>
+            </Card>
+          )
       )}
     </div>
   </div>);

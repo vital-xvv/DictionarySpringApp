@@ -21,7 +21,7 @@ const useFetchAxios = () => {
       }
     });
     setProcess('idle')
-    return resp?.data;
+    return resp;
   }, [])
 
   const clearError = useCallback(

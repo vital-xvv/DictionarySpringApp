@@ -9,6 +9,8 @@ html, body {
   margin: 0;
   padding: 0;
   background: linear-gradient(-45deg, rgb(67, 188, 204), rgb(21, 37, 131));
+  background-attachment: fixed;
+  //overflow-y: hidden;
 }
 
 .main-container {
@@ -36,11 +38,10 @@ html, body {
   background: #fff;
   margin: 0 auto;
   padding: 1rem 1.3rem;
-  width: 90%;
+  width: 85%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
   border-radius: 30px;
-  margin-bottom: 3rem;
 }
