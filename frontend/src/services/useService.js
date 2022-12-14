@@ -1,5 +1,6 @@
 import useFetchAxios from "../hooks/useFetchAxios";
 import {useNavigate} from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 const baseUrl = process.env.REACT_APP_URL;
 export const useService = () => {
@@ -22,14 +23,14 @@ export const useService = () => {
   }
 
   const getCurrentUser = async () => {
-    const userName = localStorage.getItem('username')
+    const userName = localStorage.getItem('username');
     let res;
-    res = await request(`${baseUrl}/user/${userName}`);
-    if(res === undefined) {
+    if (localStorage.getItem('role') === 'ADMIN') {
+      res = await request(`${baseUrl}/user/${userName}`);
+    } else {
       res = await request(`http://localhost:8080/account/${userName}`);
     }
-    const {data} = res
-    localStorage.setItem('role', data?.roles[0].name)
+    const {data} = res;
     if (data.firstName && data.lastName) {
       localStorage.setItem('displayName', data.firstName + ' ' + data.lastName)
     }
@@ -39,7 +40,9 @@ export const useService = () => {
     try {
       const {data} = await request(`http://localhost:8080/login?username=${email}&password=${password}`, 'POST')
       localStorage.setItem('token', 'Bearer ' + data.access_token);
+      const decoded = jwt_decode(data.access_token);
       localStorage.setItem('username', email);
+      localStorage.setItem('role', decoded.roles[0].slice(5));
     } catch (e) {
       alert('Something went wrong, try again :(')
     }
@@ -61,8 +64,8 @@ export const useService = () => {
     }
   }
 
-  const getWords = async (lang) => {
-    return await request(`${baseUrl}/dictionary/words/0/20/${lang}`)
+  const getWords = async (lang, offset) => {
+    return await request(`${baseUrl}/dictionary/words/${offset}/5/${lang}`)
   }
 
   const addWord = async (word) => {

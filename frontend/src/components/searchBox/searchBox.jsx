@@ -58,9 +58,9 @@ const SearchBox = ({searchRequest, setWordInfo, setTranslationResult, setSearchR
             <MenuItem value='' disabled>
               <em>Language</em>
             </MenuItem>
-            <MenuItem value='en'>English</MenuItem>
-            <MenuItem value='ua'>Українська</MenuItem>
-            <MenuItem value='es'>Español</MenuItem>
+            <MenuItem disabled={selectedLanguage === 'en'} value='en'>English</MenuItem>
+            <MenuItem disabled={selectedLanguage === 'ua'} value='ua'>Українська</MenuItem>
+            <MenuItem disabled={selectedLanguage === 'es'} value='es'>Español</MenuItem>
           </Select>
         </FormControl>
       </div>

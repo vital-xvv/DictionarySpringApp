@@ -9,17 +9,21 @@ const adminPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [words, setWords] = useState([]);
   const [searchFilter, setSearchFilter] = useState('');
-  const {getWords, deleteWord} = useService()
-  useEffect(() => {
-    if (localStorage.getItem('role') !== 'ROLE_ADMIN') {
-      return navigate('/login')
-    }
-    handleFetchWords()
-  }, []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [numOfPages, setNumOfPages] = useState('');
+  const {getWords, deleteWord, isLoggedIn} = useService()
 
-  const handleFetchWords = async (val = null) => {
-    const {data} = await getWords(val ? val : selectedLanguage);
+  useEffect(() => {
+    if (localStorage.getItem('role') !== 'ADMIN') {
+      return navigate(isLoggedIn() ? '/' : '/login');
+    }
+    handleFetchWords(currentPage - 1)
+  }, [currentPage]);
+
+  const handleFetchWords = async (offset = 0) => {
+    const {data} = await getWords(selectedLanguage, offset);
     setWords(data.words)
+    setNumOfPages(data.numberOfPages);
   }
 
   return (<div className="admin-page">
@@ -83,30 +87,20 @@ const adminPage = () => {
             </Card>
           )
       )}
+      <div className="arrows-group">
+        <Button variant="outlined"
+                disabled={currentPage - 1 < 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+        >&#60;</Button>
+        <div>{currentPage}</div>
+        <Button variant="outlined"
+                disabled={currentPage + 1 > numOfPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+        >&#62;</Button>
+      </div>
     </div>
   </div>);
 
 }
 
 export default adminPage;
-
-/*
-<Card variant="outlined">
-  <CardContent className="card-content">
-    <div><Typography variant="h5" component="div">
-      be
-    </Typography>
-      <Typography sx={{mb: 1.5}} color="text.secondary">
-        adjective
-      </Typography>
-      <Typography variant="body2">
-        well meaning and kindly.
-        <br/>
-        {'"a benevolent smile"'}
-      </Typography></div>
-    <div className="btn-group">
-      <Typography><Button variant="outlined">Edit</Button></Typography>
-      <Typography><Button variant="outlined" color="error">Remove</Button></Typography>
-    </div>
-  </CardContent>
-</Card>*/

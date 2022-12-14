@@ -3,13 +3,21 @@ import {Button} from "@mui/material";
 import {Link, useNavigate} from 'react-router-dom';
 import {useLocation} from "react-router-dom";
 import useService from "../../../services/useService";
+import {useEffect, useState} from "react";
 
 const Header = () => {
   const {pathname} = useLocation();
   const {isLoggedIn} = useService();
-  const displayName = localStorage.getItem('displayName')
+  const [displayName, setDisplayName] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setDisplayName(localStorage.getItem('displayName'))
+  }, []);
+
+
   const handleLogout = () => {
+    setDisplayName('');
     localStorage.clear();
     navigate('/login')
   }

@@ -16,8 +16,6 @@ const homePage = () => {
     getCurrentUser()
   }, []);
 
-
-
   const setWordInfo = async (selectedLanguage) => {
     const {data} = await getWord(selectedLanguage, searchRequest);
     setWord(data);
