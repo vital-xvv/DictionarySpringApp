@@ -17,13 +17,23 @@ const adminPage = () => {
     if (localStorage.getItem('role') !== 'ADMIN') {
       return navigate(isLoggedIn() ? '/' : '/login');
     }
-    handleFetchWords(currentPage - 1)
+    handleFetchWords(selectedLanguage,currentPage - 1)
   }, [currentPage]);
 
-  const handleFetchWords = async (offset = 0) => {
-    const {data} = await getWords(selectedLanguage, offset);
+  const handleFetchWords = async (lang = selectedLanguage, offset = 0) => {
+    const {data} = await getWords(lang, offset);
+    console.log(data)
+    if(!data.words.length) {
+      return setCurrentPage((prev) => prev - 1)
+    }
     setWords(data.words)
     setNumOfPages(data.numberOfPages);
+  }
+
+  const handleDeleteWord = async (word) => {
+    if(!confirm('Delete word?')) return;
+    await deleteWord(word, selectedLanguage)
+    handleFetchWords(selectedLanguage, currentPage - 1)
   }
 
   return (<div className="admin-page">
@@ -76,10 +86,7 @@ const adminPage = () => {
                   </Typography>
                   <Typography>
                     <Button variant="outlined" color="error"
-                            onClick={() => {
-                              deleteWord(word.word, selectedLanguage)
-                              handleFetchWords()
-                            }}
+                            onClick={() => handleDeleteWord(word.word)}
                     >Remove</Button>
                   </Typography>
                 </div>

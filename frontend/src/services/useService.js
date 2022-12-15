@@ -92,9 +92,7 @@ export const useService = () => {
       langCode,
       wordObject: null
     }
-    if (confirm('Delete?')) {
-      return await request(`${baseUrl}/dictionary/delete/word`, 'DELETE', payload)
-    }
+    return await request(`${baseUrl}/dictionary/delete/word`, 'DELETE', payload)
   }
 
   return {
