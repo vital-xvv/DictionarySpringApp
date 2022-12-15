@@ -10,8 +10,8 @@ const adminPage = () => {
   const [words, setWords] = useState([]);
   const [searchFilter, setSearchFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [numOfPages, setNumOfPages] = useState('');
-  const {getWords, deleteWord, isLoggedIn} = useService()
+  const [numOfPages, setNumOfPages] = useState(0);
+  const {getWords, deleteWord, isLoggedIn, getWordsByFilter} = useService()
 
   useEffect(() => {
     if (localStorage.getItem('role') !== 'ADMIN') {
@@ -20,9 +20,20 @@ const adminPage = () => {
     handleFetchWords(selectedLanguage,currentPage - 1)
   }, [currentPage]);
 
+  useEffect(() => {
+    handleSearch()
+  }, [searchFilter]);
+
+  const handleSearch = async () => {
+    if(!searchFilter) return handleFetchWords()
+    const {data} = await getWordsByFilter(searchFilter, selectedLanguage);
+    const pages = Math.ceil(data.length / 5)
+    setNumOfPages(pages)
+    setWords(data)
+  }
+
   const handleFetchWords = async (lang = selectedLanguage, offset = 0) => {
     const {data} = await getWords(lang, offset);
-    console.log(data)
     if(!data.words.length) {
       return setCurrentPage((prev) => prev - 1)
     }
@@ -62,7 +73,7 @@ const adminPage = () => {
         <div><Link to={'add'}><Button variant="contained" color="primary">Add Word</Button></Link></div>
       </div>
       {words
-          .filter(word => word.word.includes(searchFilter) || !searchFilter.length)
+          // .filter(word => word.word.includes(searchFilter) || !searchFilter.length)
           .map((word, idx) => (
             <Card variant="outlined" key={idx}>
               <CardContent className="card-content">
@@ -94,7 +105,7 @@ const adminPage = () => {
             </Card>
           )
       )}
-      <div className="arrows-group">
+      {!searchFilter ? <div className="arrows-group">
         <Button variant="outlined"
                 disabled={currentPage - 1 < 1}
                 onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -104,7 +115,7 @@ const adminPage = () => {
                 disabled={currentPage + 1 > numOfPages}
                 onClick={() => setCurrentPage((prev) => prev + 1)}
         >&#62;</Button>
-      </div>
+      </div> : null}
     </div>
   </div>);
 

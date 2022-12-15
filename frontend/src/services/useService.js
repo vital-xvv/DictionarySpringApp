@@ -95,6 +95,15 @@ export const useService = () => {
     return await request(`${baseUrl}/dictionary/delete/word`, 'DELETE', payload)
   }
 
+  const getWordsByFilter = async (filter, lang) => {
+    const payload = {
+      reverse: false,
+      langCode: lang,
+      startsWith: filter
+    }
+    return await request(`${baseUrl}/dictionary/words/filter/by/startsWith`, 'POST', payload)
+  }
+
   return {
     request,
     process,
@@ -109,7 +118,8 @@ export const useService = () => {
     getWords,
     addWord,
     changeWord,
-    deleteWord
+    deleteWord,
+    getWordsByFilter
   }
 }
 
