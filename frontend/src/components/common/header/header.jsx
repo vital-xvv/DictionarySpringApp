@@ -26,7 +26,7 @@ const Header = () => {
   return pathname === '/' ? <header className="header">
     <div className="logo">DictionaryApp</div>
     {isLoggedIn() ? <div className="header-btn-group">
-      <div>{displayName ? displayName : localStorage.getItem('username')}</div>
+      <div><Link to="userInfo">{displayName ? displayName : localStorage.getItem('username')}</Link></div>
       <Button variant="outlined" onClick={handleLogout}>Logout</Button>
     </div> : <Link to="/login"><Button variant="contained" color="secondary">Login</Button></Link>}
   </header> : null

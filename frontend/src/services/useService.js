@@ -34,6 +34,8 @@ export const useService = () => {
     if (data.firstName && data.lastName) {
       localStorage.setItem('displayName', data.firstName + ' ' + data.lastName)
     }
+    localStorage.setItem('id', data.id)
+    return data;
   }
 
   const login = async (email, password) => {
